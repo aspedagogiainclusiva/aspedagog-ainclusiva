@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oposiciones PT — Calculadora de Méritos</title>
+<link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.46.0/tabler-icons.min.css">
+<style>
+  :root {
+    --color-gris-carbon: #3A3A3A;
+    --color-gris-cabecera: #F4F4F2;
+    --color-gris-seccion: #8C8681;
+    --color-fondo: #EDEDEA;
+    --color-borde: #E0E0DC;
+    --color-borde-salmon: #F3E2DD;
+    --color-subtotal: #F6DEDA;
+    --color-subtotal-texto: #8A4A40;
+    --color-subtotal-valor: #C9695A;
+    --color-final: #D98C7A;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--color-fondo); margin: 0; display: flex; justify-content: center; }
+  .pantalla { width: 100%; max-width: 400px; background: #FFFFFF; min-height: 100vh; }
+  .cabecera-app { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--color-gris-cabecera); border-bottom: 1px solid var(--color-borde); }
+  .marca { font-family: 'Pompiere', cursive; font-size: 19px; color: var(--color-gris-carbon); }
+  .volver { cursor: pointer; font-size: 20px; color: var(--color-gris-carbon); }
+  .contenido { padding: 18px 16px 32px; }
+
+  .selector-alumna { display: flex; align-items: center; gap: 8px; background: var(--color-gris-cabecera); border: 1px solid var(--color-borde); border-radius: 10px; padding: 8px 12px; margin-bottom: 16px; font-size: 13px; }
+  .selector-alumna select { flex: 1; border: none; background: transparent; font-size: 13px; font-family: 'Nunito', sans-serif; color: var(--color-gris-carbon); }
+
+  .intro { font-size: 11px; color: #7A7A7A; margin: 0 0 14px; }
+
+  .titulo-seccion { display: flex; align-items: center; background: var(--color-gris-seccion); border-radius: 10px; padding: 9px 12px; margin: 16px 0 10px; }
+  .titulo-seccion span.nombre { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.5px; }
+  .titulo-seccion span.max { margin-left: auto; font-size: 10px; color: #EFE9E7; font-weight: 700; }
+
+  .tarjeta-merito { background: #FFFFFF; border: 1px solid var(--color-borde-salmon); border-radius: 12px; padding: 12px; margin-bottom: 8px; }
+  .tarjeta-merito .etiqueta { font-size: 11.5px; font-weight: 700; color: var(--color-gris-carbon); margin-bottom: 6px; }
+  .tarjeta-merito .ayuda { font-size: 10px; color: #A0958F; margin-top: 4px; }
+  .fila-inputs { display: flex; gap: 8px; }
+  .fila-inputs input, .tarjeta-merito input, .tarjeta-merito select {
+    flex: 1; padding: 8px; border-radius: 8px; border: 1px solid #E4D2CF; font-size: 12px; font-family: 'Nunito', sans-serif; width: 100%;
+  }
+
+  .caja-subtotal { background: var(--color-subtotal); border-radius: 10px; padding: 10px 12px; margin: 4px 0 6px; display: flex; justify-content: space-between; align-items: center; }
+  .caja-subtotal span.texto { font-size: 12px; font-weight: 700; color: var(--color-subtotal-texto); }
+  .caja-subtotal span.valor { font-size: 16px; font-weight: 800; color: var(--color-subtotal-valor); }
+
+  .caja-final { background: var(--color-final); border-radius: 14px; padding: 18px; text-align: center; margin-top: 18px; }
+  .caja-final .etiqueta { font-size: 11px; color: #FDEDE9; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; }
+  .caja-final .valor { font-size: 32px; font-weight: 800; color: #FFFFFF; margin-top: 4px; }
+
+  .boton-guardar { width: 100%; background: var(--color-subtotal); color: var(--color-subtotal-texto); border: 1px solid #E4B8B0; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; margin-top: 16px; cursor: pointer; }
+  .boton-guardar:disabled { opacity: 0.6; cursor: default; }
+  .aviso { font-size: 12px; text-align: center; padding: 10px; border-radius: 10px; margin-top: 10px; }
+  .aviso.info { background: #E4F3EE; color: #1E5A4A; }
+  .aviso.error { background: #FBE0D5; color: #D96C56; }
+</style>
+</head>
+<body>
+<div class="pantalla">
+  <div class="cabecera-app">
+    <span class="volver" onclick="window.location.href='inicio.html'">←</span>
+    <span class="marca">Calc. de méritos</span>
+    <svg style="margin-left:auto;" width="28" height="28" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16.5" fill="#D4EBE8" stroke="#F2C94C" stroke-width="1.4" stroke-dasharray="2 2.4"/>
+      <text x="18" y="24" text-anchor="middle" font-family="Georgia, serif" font-size="17" fill="#3A3A3A">AS</text>
+    </svg>
+  </div>
+
+  <div class="contenido">
+    <div id="selectorAdmin"></div>
+    <p class="intro">Rellena tus méritos según la convocatoria. La puntuación se calcula sola y nunca supera 10 puntos.</p>
+
+    <div class="titulo-seccion"><span class="nombre">I. Experiencia docente</span><span class="max">máx. 5 pts</span></div>
+
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Misma especialidad (PT), centro público</div>
+      <div class="fila-inputs">
+        <input type="number" min="0" id="exp11anios" placeholder="Años">
+        <input type="number" min="0" max="11" id="exp11meses" placeholder="Meses">
+      </div>
+      <div class="ayuda">1,000 pt/año (0,0833 pt/mes)</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Otra especialidad, centro público</div>
+      <div class="fila-inputs">
+        <input type="number" min="0" id="exp12anios" placeholder="Años">
+        <input type="number" min="0" max="11" id="exp12meses" placeholder="Meses">
+      </div>
+      <div class="ayuda">0,500 pt/año (0,0416 pt/mes)</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Mismo nivel educativo, otros centros (concertados/privados)</div>
+      <div class="fila-inputs">
+        <input type="number" min="0" id="exp13anios" placeholder="Años">
+        <input type="number" min="0" max="11" id="exp13meses" placeholder="Meses">
+      </div>
+      <div class="ayuda">0,500 pt/año (0,0416 pt/mes)</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Distinto nivel educativo, otros centros</div>
+      <div class="fila-inputs">
+        <input type="number" min="0" id="exp14anios" placeholder="Años">
+        <input type="number" min="0" max="11" id="exp14meses" placeholder="Meses">
+      </div>
+      <div class="ayuda">0,250 pt/año (0,0208 pt/mes)</div>
+    </div>
+
+    <div class="caja-subtotal">
+      <span class="texto">Subtotal Experiencia</span>
+      <span class="valor" id="subtotalExperiencia">0,00 pts</span>
+    </div>
+
+    <div class="titulo-seccion"><span class="nombre">II. Formación académica</span><span class="max">máx. 5 pts</span></div>
+
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Nota media del título de acceso al Cuerpo</div>
+      <input type="number" step="0.01" min="0" max="10" id="notaMedia" placeholder="Ej. 7,80">
+      <div class="ayuda">6,00–7,5 → 1 pt · 7,51–10 → 1,5 pt</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Postgrado (elige el más alto que tengas)</div>
+      <select id="postgrado">
+        <option value="0">Ninguno</option>
+        <option value="1">Diploma Est. Avanzados / Suficiencia Investigadora / Máster</option>
+        <option value="2">Doctorado</option>
+      </select>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">¿Premio extraordinario de doctorado?</div>
+      <select id="premioDoctorado">
+        <option value="0">No</option>
+        <option value="1">Sí</option>
+      </select>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Otras titulaciones universitarias oficiales (distintas a la del ingreso)</div>
+      <div class="fila-inputs">
+        <input type="number" min="0" id="titulacionesPrimerCiclo" placeholder="1er ciclo (nº)">
+        <input type="number" min="0" id="titulacionesSegundoCiclo" placeholder="2º ciclo (nº)">
+      </div>
+      <div class="ayuda">1 pt por cada titulación de 1er ciclo, 1 pt por cada una de 2º ciclo</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Titulaciones de régimen especial / FP específica</div>
+      <div class="fila-inputs">
+        <input type="number" min="0" id="musicaDanza" placeholder="Música/Danza (nº)">
+        <input type="number" min="0" id="eoiAvanzado" placeholder="EOI avanzado (nº)">
+      </div>
+      <div class="ayuda">0,500 pt cada una</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Idiomas extranjeros (Formación académica)</div>
+      <input type="number" min="0" id="idiomasFormacion" placeholder="Nº de idiomas con C1 o C2">
+      <div class="ayuda">0,500 pt por idioma (solo el nivel más alto de cada uno)</div>
+    </div>
+
+    <div class="caja-subtotal">
+      <span class="texto">Subtotal Formación</span>
+      <span class="valor" id="subtotalFormacion">0,00 pts</span>
+    </div>
+
+    <div class="titulo-seccion"><span class="nombre">III. Otros méritos</span><span class="max">máx. 2 pts</span></div>
+
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Horas de formación permanente</div>
+      <input type="number" min="0" id="horasFormacion" placeholder="Ej. 120">
+      <div class="ayuda">0,01 pt/hora, máximo 200 horas (2 pts)</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">¿Máster no contado antes en este cálculo?</div>
+      <select id="masterOtrosMeritos">
+        <option value="0">Ninguno</option>
+        <option value="1">Máster oficial adicional (2 pts)</option>
+        <option value="2">Máster no oficial (0,5 pts)</option>
+      </select>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Cursos institucionales de la Consejería de Cantabria</div>
+      <input type="number" min="0" id="cursosCantabria" placeholder="Nº de cursos">
+      <div class="ayuda">0,10 pt/curso, máximo 0,5 pts</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Idiomas C1/C2 adicionales (no contados en Formación académica)</div>
+      <input type="number" min="0" id="idiomasOtrosMeritos" placeholder="Nº de idiomas">
+      <div class="ayuda">1 pt por idioma</div>
+    </div>
+    <div class="tarjeta-merito">
+      <div class="etiqueta">Años en centro de especial dificultad de Cantabria</div>
+      <select id="centroEspecialDificultad">
+        <option value="0">Ninguno</option>
+        <option value="1">1 año (0,20 pt)</option>
+        <option value="2">2 años (0,45 pt)</option>
+        <option value="3">3 años (0,75 pt)</option>
+        <option value="4">4 años o más (1,10 pt)</option>
+      </select>
+    </div>
+
+    <div class="caja-subtotal">
+      <span class="texto">Subtotal Otros méritos</span>
+      <span class="valor" id="subtotalOtros">0,00 pts</span>
+    </div>
+
+    <div class="caja-final">
+      <div class="etiqueta">Puntuación total de concurso</div>
+      <div class="valor" id="puntuacionFinal">0,00 / 10</div>
+    </div>
+
+    <button class="boton-guardar" id="botonGuardar" onclick="guardarMeritos()">Guardar méritos</button>
+    <div id="aviso"></div>
+  </div>
+</div>
+
+<script>
+  const URL_API = 'https://script.google.com/macros/s/AKfycbxylD45E6vlENV_Ttrl54jWPvhaQ1YdCBedoIQANAmM0UjDPEnWWRfa2_VpVSxR01ho/exec';
+
+  const sesionTexto = localStorage.getItem('sesionOposicionesPT');
+  if (!sesionTexto) {
+    window.location.href = 'index.html';
+  }
+  const sesion = JSON.parse(sesionTexto);
+  let emailActual = sesion.email;
+
+  async function llamarBackend(accion, datos) {
+    const respuesta = await fetch(URL_API, { method: 'POST', body: JSON.stringify({ accion, datos }) });
+    return respuesta.json();
+  }
+
+  function mostrarAviso(texto, tipo) {
+    document.getElementById('aviso').innerHTML = `<div class="aviso ${tipo}">${texto}</div>`;
+    setTimeout(() => { document.getElementById('aviso').innerHTML = ''; }, 4000);
+  }
+
+  function num(id) {
+    const v = parseFloat(document.getElementById(id).value);
+    return isNaN(v) ? 0 : v;
+  }
+
+  function redondear(n) {
+    return Math.round(n * 100) / 100;
+  }
+
+  // --- Cálculo del baremo, según el Anexo I de la convocatoria ---
+  function calcularExperiencia() {
+    const anos11 = num('exp11anios') + num('exp11meses') / 12;
+    const anos12 = num('exp12anios') + num('exp12meses') / 12;
+    const anos13 = num('exp13anios') + num('exp13meses') / 12;
+    const anos14 = num('exp14anios') + num('exp14meses') / 12;
+
+    const puntos = (anos11 * 1.000) + (anos12 * 0.500) + (anos13 * 0.500) + (anos14 * 0.250);
+    return Math.min(puntos, 5);
+  }
+
+  function calcularFormacion() {
+    let puntos = 0;
+
+    const nota = num('notaMedia');
+    if (nota >= 7.51) puntos += 1.500;
+    else if (nota >= 6.00) puntos += 1.000;
+
+    const postgrado = num('postgrado');
+    if (postgrado === 1) puntos += 1.000;
+    if (postgrado === 2) puntos += 1.000;
+    if (num('premioDoctorado') === 1) puntos += 0.500;
+
+    puntos += num('titulacionesPrimerCiclo') * 1.000;
+    puntos += num('titulacionesSegundoCiclo') * 1.000;
+
+    puntos += num('musicaDanza') * 0.500;
+    puntos += num('eoiAvanzado') * 0.500;
+
+    puntos += num('idiomasFormacion') * 0.500;
+
+    return Math.min(puntos, 5);
+  }
+
+  function calcularOtrosMeritos() {
+    let puntos = 0;
+
+    const horas = Math.min(num('horasFormacion'), 200);
+    puntos += horas * 0.01;
+
+    const master = num('masterOtrosMeritos');
+    if (master === 1) puntos += 2.000;
+    if (master === 2) puntos += 0.500;
+
+    puntos += Math.min(num('cursosCantabria') * 0.10, 0.500);
+
+    puntos += num('idiomasOtrosMeritos') * 1.000;
+
+    const centrosTabla = { 0: 0, 1: 0.20, 2: 0.45, 3: 0.75, 4: 1.10 };
+    puntos += centrosTabla[num('centroEspecialDificultad')] || 0;
+
+    return Math.min(puntos, 2);
+  }
+
+  function recalcular() {
+    const experiencia = calcularExperiencia();
+    const formacion = calcularFormacion();
+    const otros = calcularOtrosMeritos();
+    const total = Math.min(experiencia + formacion + otros, 10);
+
+    document.getElementById('subtotalExperiencia').textContent = redondear(experiencia).toFixed(2) + ' pts';
+    document.getElementById('subtotalFormacion').textContent = redondear(formacion).toFixed(2) + ' pts';
+    document.getElementById('subtotalOtros').textContent = redondear(otros).toFixed(2) + ' pts';
+    document.getElementById('puntuacionFinal').textContent = redondear(total).toFixed(2) + ' / 10';
+  }
+
+  // Recalcular en cada cambio de cualquier campo
+  document.querySelectorAll('.contenido input, .contenido select').forEach(el => {
+    el.addEventListener('input', recalcular);
+    el.addEventListener('change', recalcular);
+  });
+
+  async function inicializarSelector() {
+    if (!sesion.esAdmin) return;
+    const resultado = await llamarBackend('listarAlumnas', {});
+    if (!resultado.exito) return;
+
+    const opciones = resultado.resultado.map(a => `<option value="${a.email}">${a.nombre}</option>`).join('');
+    document.getElementById('selectorAdmin').innerHTML = `
+      <div class="selector-alumna">
+        <i class="ti ti-user" aria-hidden="true"></i>
+        <select id="selectAlumna">${opciones}</select>
+      </div>`;
+
+    document.getElementById('selectAlumna').value = sesion.email;
+    document.getElementById('selectAlumna').addEventListener('change', (e) => {
+      emailActual = e.target.value;
+      cargarMeritos();
+    });
+  }
+
+  function rellenarCampo(id, valor) {
+    const el = document.getElementById(id);
+    if (el && valor !== undefined && valor !== null) el.value = valor;
+  }
+
+  async function cargarMeritos() {
+    const resultado = await llamarBackend('obtenerMeritos', { emailAlumna: emailActual });
+    if (resultado.exito && resultado.resultado) {
+      const m = resultado.resultado;
+      Object.keys(m).forEach(campo => rellenarCampo(campo, m[campo]));
+    }
+    recalcular();
+  }
+
+  async function guardarMeritos() {
+    const boton = document.getElementById('botonGuardar');
+    if (boton.disabled) return;
+    boton.disabled = true;
+    boton.textContent = 'Guardando...';
+
+    const campos = [
+      'exp11anios','exp11meses','exp12anios','exp12meses','exp13anios','exp13meses','exp14anios','exp14meses',
+      'notaMedia','postgrado','premioDoctorado','titulacionesPrimerCiclo','titulacionesSegundoCiclo',
+      'musicaDanza','eoiAvanzado','idiomasFormacion',
+      'horasFormacion','masterOtrosMeritos','cursosCantabria','idiomasOtrosMeritos','centroEspecialDificultad'
+    ];
+    const datos = { emailAlumna: emailActual };
+    campos.forEach(c => datos[c] = num(c));
+
+    const resultado = await llamarBackend('guardarMeritos', datos);
+    mostrarAviso(resultado.exito ? 'Méritos guardados correctamente.' : (resultado.mensaje || 'No se pudo guardar.'), resultado.exito ? 'info' : 'error');
+
+    boton.disabled = false;
+    boton.textContent = 'Guardar méritos';
+  }
+
+  inicializarSelector();
+  cargarMeritos();
+</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oposiciones PT — Notas y medias</title>
+<link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.46.0/tabler-icons.min.css">
+<style>
+  :root {
+    --color-verde-esmeralda: #1E8A6E;
+    --color-verde-menta: #D4EBE8;
+    --color-amarillo-mostaza: #F2C94C;
+    --color-gris-carbon: #3A3A3A;
+    --color-gris-medio: #7A7A7A;
+    --color-gris-cabecera: #F4F4F2;
+    --color-gris-seccion: #96A9A4;
+    --color-fondo: #EDEDEA;
+    --color-borde: #E0E0DC;
+    --color-suspensa: #D96C56;
+    --color-media: #B08A00;
+    --color-media-fondo: #FBF0D2;
+    --color-suspensa-fondo: #FBE0D5;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--color-fondo); margin: 0; display: flex; justify-content: center; }
+  .pantalla { width: 100%; max-width: 400px; background: #FFFFFF; min-height: 100vh; }
+  .cabecera-app { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--color-gris-cabecera); border-bottom: 1px solid var(--color-borde); }
+  .marca { font-family: 'Pompiere', cursive; font-size: 19px; color: var(--color-gris-carbon); }
+  .volver { cursor: pointer; font-size: 20px; color: var(--color-gris-carbon); }
+  .contenido { padding: 18px 16px 32px; }
+
+  .selector-alumna { display: flex; align-items: center; gap: 8px; background: var(--color-gris-cabecera); border: 1px solid var(--color-borde); border-radius: 10px; padding: 8px 12px; margin-bottom: 16px; font-size: 13px; }
+  .selector-alumna select { flex: 1; border: none; background: transparent; font-size: 13px; font-family: 'Nunito', sans-serif; color: var(--color-gris-carbon); }
+
+  .titulo-seccion { font-size: 12px; font-weight: 800; color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.5px; margin: 18px 0 8px; background: var(--color-gris-seccion); padding: 7px 12px; border-radius: 8px; }
+  .titulo-seccion:first-child { margin-top: 0; }
+
+  .tarjeta-nota { display: flex; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1px solid var(--color-borde); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; gap: 10px; }
+  .tarjeta-nota .izquierda { display: flex; align-items: center; gap: 10px; }
+  .tarjeta-nota .icono-caja { width: 34px; height: 34px; border-radius: 9px; background: var(--color-verde-menta); display: flex; align-items: center; justify-content: center; color: var(--color-verde-esmeralda); font-size: 15px; flex-shrink: 0; }
+  .tarjeta-nota .nombre { font-size: 13px; font-weight: 600; }
+  .tarjeta-nota .nota-extra { font-size: 11px; color: var(--color-gris-medio); }
+  .tarjeta-nota .valor { font-size: 18px; font-weight: 800; }
+  .tarjeta-nota input { width: 64px; padding: 8px; border-radius: 8px; border: 1px solid #D8D8D4; font-size: 14px; text-align: center; }
+
+  .estado-aprobada { color: var(--color-verde-esmeralda); }
+  .estado-media { color: var(--color-media); }
+  .estado-suspensa { color: var(--color-suspensa); }
+
+  .etiqueta { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-left: 6px; }
+  .etiqueta-aprobada { background: var(--color-verde-menta); color: var(--color-verde-esmeralda); }
+  .etiqueta-media { background: var(--color-media-fondo); color: var(--color-media); }
+  .etiqueta-suspensa { background: var(--color-suspensa-fondo); color: var(--color-suspensa); }
+
+  .caja-media { background: var(--color-gris-cabecera); border-radius: 12px; padding: 14px; margin: 10px 0 4px; display: flex; align-items: center; justify-content: space-between; }
+  .caja-final { background: var(--color-verde-esmeralda); border-radius: 14px; padding: 18px; margin-top: 20px; text-align: center; }
+  .caja-final .etiqueta-final { font-size: 12px; color: var(--color-verde-menta); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .caja-final .valor-final { font-size: 32px; font-weight: 800; color: #FFFFFF; margin-top: 4px; }
+  .caja-final .desglose { font-size: 11px; color: var(--color-verde-menta); margin-top: 6px; }
+
+  .boton-guardar { width: 100%; background: var(--color-verde-esmeralda); color: #FFFFFF; border: none; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 18px; }
+  .boton-guardar:disabled { opacity: 0.6; cursor: default; }
+  .aviso { font-size: 12px; text-align: center; padding: 10px; border-radius: 10px; margin-bottom: 14px; }
+  .aviso.info { background: var(--color-verde-menta); color: #1E5A4A; }
+  .aviso.error { background: #FBE0D5; color: var(--color-suspensa); }
+</style>
+</head>
+<body>
+<div class="pantalla">
+  <div class="cabecera-app">
+    <span class="volver" onclick="window.location.href='inicio.html'">←</span>
+    <span class="marca">Notas Opos</span>
+    <svg style="margin-left:auto;" width="28" height="28" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16.5" fill="#D4EBE8" stroke="#F2C94C" stroke-width="1.4" stroke-dasharray="2 2.4"/>
+      <text x="18" y="24" text-anchor="middle" font-family="Georgia, serif" font-size="17" fill="#3A3A3A">AS</text>
+    </svg>
+  </div>
+
+  <div class="contenido">
+    <div id="selectorAdmin"></div>
+    <div id="aviso"></div>
+    <div id="contenidoNotas">
+      <p style="text-align:center; color:#7A7A7A; font-size:13px;">Cargando notas...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const URL_API = 'https://script.google.com/macros/s/AKfycbxylD45E6vlENV_Ttrl54jWPvhaQ1YdCBedoIQANAmM0UjDPEnWWRfa2_VpVSxR01ho/exec';
+
+  const sesionTexto = localStorage.getItem('sesionOposicionesPT');
+  if (!sesionTexto) {
+    window.location.href = 'index.html';
+  }
+  const sesion = JSON.parse(sesionTexto);
+  let emailActual = sesion.email;
+
+  async function llamarBackend(accion, datos) {
+    const respuesta = await fetch(URL_API, { method: 'POST', body: JSON.stringify({ accion, datos }) });
+    return respuesta.json();
+  }
+
+  function mostrarAviso(texto, tipo) {
+    document.getElementById('aviso').innerHTML = `<div class="aviso ${tipo}">${texto}</div>`;
+    setTimeout(() => { document.getElementById('aviso').innerHTML = ''; }, 4000);
+  }
+
+  async function inicializarSelector() {
+    if (!sesion.esAdmin) return;
+
+    const resultado = await llamarBackend('listarAlumnas', {});
+    if (!resultado.exito) return;
+
+    const opciones = resultado.resultado
+      .map(a => `<option value="${a.email}">${a.nombre}</option>`)
+      .join('');
+
+    document.getElementById('selectorAdmin').innerHTML = `
+      <div class="selector-alumna">
+        <i class="ti ti-user" aria-hidden="true"></i>
+        <select id="selectAlumna">${opciones}</select>
+      </div>`;
+
+    document.getElementById('selectAlumna').value = sesion.email;
+    document.getElementById('selectAlumna').addEventListener('change', (e) => {
+      emailActual = e.target.value;
+      cargarNotas();
+    });
+  }
+
+  function etiquetaEstado(estado) {
+    const mapa = { aprobada: 'Aprobada', media: 'Media', suspensa: 'Suspensa' };
+    return `<span class="etiqueta etiqueta-${estado}">${mapa[estado] || estado}</span>`;
+  }
+
+  function pintarVistaAlumna(n) {
+    return `
+      <div class="titulo-seccion">Primera prueba</div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja">A</div>
+          <div><div class="nombre">Tema</div><div class="nota-extra">Mínimo 2,5</div></div>
+        </div>
+        <div class="valor estado-${n.estadoTema}">${n.notaTema} ${etiquetaEstado(n.estadoTema)}</div>
+      </div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja">B</div>
+          <div><div class="nombre">Supuesto práctico</div><div class="nota-extra">Mínimo 2,5</div></div>
+        </div>
+        <div class="valor estado-${n.estadoSupuestoPractico}">${n.notaSupuestoPractico} ${etiquetaEstado(n.estadoSupuestoPractico)}</div>
+      </div>
+      <div class="caja-media" style="${n.media1aPrueba === null ? 'background:#FBE0D5;' : ''}">
+        <span style="font-size:12px; font-weight:700; ${n.media1aPrueba === null ? 'color:#D96C56;' : ''}">Media primera prueba</span>
+        ${n.media1aPrueba === null
+          ? '<span style="font-size:12px; font-weight:700; color:#D96C56; text-align:right; max-width:170px;">No procede — no alcanza el mínimo de 2,5 en una de las partes</span>'
+          : `<span style="font-size:20px; font-weight:800; color:#1E8A6E;">${n.media1aPrueba}</span>`
+        }
+      </div>
+
+      <div class="titulo-seccion">Segunda prueba</div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja"><i class="ti ti-clipboard-text" aria-hidden="true"></i></div>
+          <div><div class="nombre">Plan de actuación</div><div class="nota-extra">Peso 40%</div></div>
+        </div>
+        <div class="valor">${n.notaPlanActuacion}</div>
+      </div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja"><i class="ti ti-school" aria-hidden="true"></i></div>
+          <div><div class="nombre">Unidad didáctica</div><div class="nota-extra">Peso 60%</div></div>
+        </div>
+        <div class="valor">${n.notaUnidadDidactica}</div>
+      </div>
+      <div class="caja-media">
+        <span style="font-size:12px; font-weight:700;">Nota segunda prueba</span>
+        <span style="font-size:20px; font-weight:800; color:#1E8A6E;">${n.nota2aPrueba}</span>
+      </div>
+
+      <div class="titulo-seccion">Fase de concurso</div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+          <div><div class="nombre">Puntuación de concurso</div></div>
+        </div>
+        <div class="valor">${n.puntuacionConcurso}</div>
+      </div>
+
+      <div class="caja-final" style="${n.notaFinal === null ? 'background:#D96C56;' : ''}">
+        <div class="etiqueta-final">Nota final estimada</div>
+        ${n.notaFinal === null
+          ? '<div style="font-size:15px; font-weight:700; color:#FFFFFF; margin-top:6px;">No se puede calcular todavía</div><div class="desglose">La primera prueba no alcanza el mínimo necesario para hacer media</div>'
+          : `<div class="valor-final">${n.notaFinal}</div><div class="desglose">Oposición ${n.notaOposicion} × 0,666 + Concurso ${n.puntuacionConcurso} × 0,333</div>`
+        }
+      </div>
+    `;
+  }
+
+  function pintarVistaAdmin(n) {
+    return `
+      <div class="titulo-seccion">Primera prueba</div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja">A</div>
+          <div><div class="nombre">Tema</div><div class="nota-extra">Mínimo 2,5</div></div>
+        </div>
+        <input type="number" step="0.1" min="0" max="10" id="inputTema" value="${n.notaTema}">
+      </div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja">B</div>
+          <div><div class="nombre">Supuesto práctico</div><div class="nota-extra">Mínimo 2,5</div></div>
+        </div>
+        <input type="number" step="0.1" min="0" max="10" id="inputSupuesto" value="${n.notaSupuestoPractico}">
+      </div>
+
+      <div class="titulo-seccion">Segunda prueba</div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja"><i class="ti ti-clipboard-text" aria-hidden="true"></i></div>
+          <div><div class="nombre">Plan de actuación</div><div class="nota-extra">Peso 40%</div></div>
+        </div>
+        <input type="number" step="0.1" min="0" max="10" id="inputPlan" value="${n.notaPlanActuacion}">
+      </div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja"><i class="ti ti-school" aria-hidden="true"></i></div>
+          <div><div class="nombre">Unidad didáctica</div><div class="nota-extra">Peso 60%</div></div>
+        </div>
+        <input type="number" step="0.1" min="0" max="10" id="inputUnidad" value="${n.notaUnidadDidactica}">
+      </div>
+
+      <div class="titulo-seccion">Fase de concurso</div>
+      <div class="tarjeta-nota">
+        <div class="izquierda">
+          <div class="icono-caja"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+          <div><div class="nombre">Puntuación de concurso</div></div>
+        </div>
+        <input type="number" step="0.1" min="0" max="10" id="inputConcurso" value="${n.puntuacionConcurso}">
+      </div>
+
+      <div class="caja-final">
+        <div class="etiqueta-final">Nota final (con los valores guardados)</div>
+        <div class="valor-final">${n.notaFinal}</div>
+      </div>
+
+      <button class="boton-guardar" id="botonGuardar" onclick="guardarNotas()">Guardar notas</button>
+    `;
+  }
+
+  async function cargarNotas() {
+    const contenedor = document.getElementById('contenidoNotas');
+    const resultado = await llamarBackend('obtenerNotas', { emailAlumna: emailActual });
+
+    if (!resultado.exito) {
+      contenedor.innerHTML = `<p style="text-align:center; color:#D96C56; font-size:13px;">${resultado.mensaje}</p>`;
+      return;
+    }
+
+    const n = resultado.resultado;
+    contenedor.innerHTML = sesion.esAdmin ? pintarVistaAdmin(n) : pintarVistaAlumna(n);
+  }
+
+  async function guardarNotas() {
+    const boton = document.getElementById('botonGuardar');
+    if (boton.disabled) return;
+    boton.disabled = true;
+    boton.textContent = 'Guardando...';
+
+    const datos = {
+      emailAlumna: emailActual,
+      notaTema: parseFloat(document.getElementById('inputTema').value) || 0,
+      notaSupuestoPractico: parseFloat(document.getElementById('inputSupuesto').value) || 0,
+      notaPlanActuacion: parseFloat(document.getElementById('inputPlan').value) || 0,
+      notaUnidadDidactica: parseFloat(document.getElementById('inputUnidad').value) || 0,
+      puntuacionConcurso: parseFloat(document.getElementById('inputConcurso').value) || 0
+    };
+
+    const resultado = await llamarBackend('guardarNota', datos);
+    mostrarAviso(resultado.exito ? 'Notas guardadas.' : (resultado.mensaje || 'No se pudo guardar.'), resultado.exito ? 'info' : 'error');
+    cargarNotas();
+  }
+
+  inicializarSelector();
+  cargarNotas();
+</script>
+</body>
+</html>
