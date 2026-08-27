@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Oposiciones PT — Defensa/Exposición oral</title>
+<link href="https://fonts.googleapis.com/css2?family=Pompiere&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.46.0/tabler-icons.min.css">
+<style>
+  :root {
+    --color-verde-esmeralda: #1E8A6E;
+    --color-verde-menta: #D4EBE8;
+    --color-amarillo-mostaza: #F2C94C;
+    --color-gris-carbon: #3A3A3A;
+    --color-gris-cabecera: #F4F4F2;
+    --color-gris-seccion: #96A9A4;
+    --color-fondo: #EDEDEA;
+    --color-borde: #E0E0DC;
+    --color-suspensa: #D96C56;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Nunito', sans-serif; background: var(--color-fondo); margin: 0; display: flex; justify-content: center; }
+  .pantalla { width: 100%; max-width: 400px; background: #FFFFFF; min-height: 100vh; position: relative; }
+  .cabecera-app { display: flex; align-items: center; gap: 10px; padding: 14px 16px; background: var(--color-gris-cabecera); border-bottom: 1px solid var(--color-borde); }
+  .marca { font-family: 'Pompiere', cursive; font-size: 17px; color: var(--color-gris-carbon); }
+  .volver { cursor: pointer; font-size: 20px; color: var(--color-gris-carbon); }
+  .contenido { padding: 18px 16px 32px; }
+
+  .selector-alumna { display: flex; align-items: center; gap: 8px; background: var(--color-gris-cabecera); border: 1px solid var(--color-borde); border-radius: 10px; padding: 8px 12px; margin-bottom: 16px; font-size: 13px; }
+  .selector-alumna select { flex: 1; border: none; background: transparent; font-size: 13px; font-family: 'Nunito', sans-serif; color: var(--color-gris-carbon); }
+
+  .bloque-titulo { background: var(--color-gris-seccion); border-radius: 10px; padding: 10px 12px; margin: 14px 0 10px; }
+  .bloque-titulo span { font-size: 13px; font-weight: 800; color: #fff; text-transform: uppercase; letter-spacing: 0.4px; }
+  .fila-estrellas { display: flex; gap: 10px; margin-bottom: 6px; }
+  .fila-estrellas span { font-size: 34px; line-height: 1; color: var(--color-amarillo-mostaza); cursor: pointer; flex-shrink: 0; }
+  .ayuda-estrellas { font-size: 10px; color: #7A7A7A; margin: 0 0 10px; }
+
+  .modal-fondo { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: flex-start; justify-content: center; z-index: 50; padding: 20px 12px; overflow-y: auto; }
+  .modal-fondo.oculto { display: none; }
+  .modal-rubrica { background: #FFFFFF; border-radius: 16px; padding: 18px; width: 100%; max-width: 380px; margin: 20px auto; }
+  .modal-rubrica h3 { font-size: 14px; font-weight: 800; color: var(--color-gris-carbon); margin: 0 0 4px; }
+  .modal-rubrica .cerrar { position: absolute; top: 10px; right: 14px; font-size: 20px; color: #7A7A7A; cursor: pointer; }
+
+  .grupo-indicador { border: 1px solid var(--color-borde); border-radius: 10px; padding: 10px; margin-bottom: 6px; }
+  .grupo-indicador .texto { font-size: 11.5px; color: var(--color-gris-carbon); flex: 1; }
+  .grupo-indicador .fila { display: flex; align-items: center; gap: 8px; }
+  .grupo-indicador input { width: 56px; padding: 6px; border-radius: 6px; border: 1px solid #D8D8D4; font-size: 12px; text-align: center; }
+  .grupo-indicador .max { font-size: 10px; color: #A0958F; }
+
+  .titulo-tabla { font-size: 12px; font-weight: 800; color: var(--color-verde-esmeralda); text-transform: uppercase; letter-spacing: 0.4px; margin: 14px 0 8px; }
+
+  .oral-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #F0F0EC; }
+  .oral-item .texto { font-size: 11px; color: var(--color-gris-carbon); flex: 1; padding-right: 8px; }
+  .oral-item select { padding: 6px; border-radius: 6px; border: 1px solid #D8D8D4; font-size: 12px; }
+
+  .comentarios { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #D8D8D4; font-size: 12px; font-family: 'Nunito', sans-serif; margin-top: 10px; min-height: 60px; }
+
+  .resultado-modal { display: flex; gap: 8px; margin: 14px 0; }
+  .caja-resultado { flex: 1; border-radius: 10px; padding: 10px; text-align: center; }
+  .caja-resultado.contenido { background: var(--color-verde-menta); }
+  .caja-resultado.oral { background: var(--color-gris-seccion); }
+  .caja-resultado .etiqueta { font-size: 10px; font-weight: 700; }
+  .caja-resultado.contenido .etiqueta { color: #1E5A4A; }
+  .caja-resultado.oral .etiqueta { color: #fff; }
+  .caja-resultado .valor { font-size: 18px; font-weight: 800; margin-top: 2px; }
+  .caja-resultado.contenido .valor { color: var(--color-verde-esmeralda); }
+  .caja-resultado.oral .valor { color: #fff; }
+
+  .boton-guardar { width: 100%; background: var(--color-verde-menta); color: #1E5A4A; border: 1px solid #B7DCD6; padding: 12px; border-radius: 10px; font-size: 13px; font-weight: 700; margin-top: 12px; cursor: pointer; }
+  .boton-guardar:disabled { opacity: 0.6; cursor: default; }
+  .aviso { font-size: 12px; text-align: center; padding: 8px; border-radius: 8px; margin-top: 8px; }
+  .aviso.info { background: #E4F3EE; color: #1E5A4A; }
+  .aviso.error { background: #FBE0D5; color: var(--color-suspensa); }
+</style>
+</head>
+<body>
+<div class="pantalla">
+  <div class="cabecera-app">
+    <span class="volver" onclick="window.location.href='inicio.html'">←</span>
+    <span class="marca">Defensa / Exposición oral</span>
+    <svg style="margin-left:auto;" width="26" height="26" viewBox="0 0 36 36">
+      <circle cx="18" cy="18" r="16.5" fill="#D4EBE8" stroke="#F2C94C" stroke-width="1.4" stroke-dasharray="2 2.4"/>
+      <text x="18" y="24" text-anchor="middle" font-family="Georgia, serif" font-size="17" fill="#3A3A3A">AS</text>
+    </svg>
+  </div>
+
+  <div class="contenido">
+    <div id="selectorAdmin"></div>
+
+    <div class="bloque-titulo"><span>Defensa del Plan de Actuación</span></div>
+    <div class="fila-estrellas" id="estrellasDefensa"></div>
+    <p class="ayuda-estrellas">Estrella rellena = intento evaluado. Pincha para ver o puntuar.</p>
+
+    <div class="bloque-titulo"><span>Exposición Prog. Intervención / Unidad</span></div>
+    <div class="fila-estrellas" id="estrellasExposicion"></div>
+    <p class="ayuda-estrellas">Estrella rellena = intento evaluado. Pincha para ver o puntuar.</p>
+  </div>
+
+  <div class="modal-fondo oculto" id="modalFondo">
+    <div class="modal-rubrica" style="position:relative;">
+      <span class="cerrar" onclick="cerrarModal()">✕</span>
+      <div id="modalContenido"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const URL_API = 'https://script.google.com/macros/s/AKfycbxylD45E6vlENV_Ttrl54jWPvhaQ1YdCBedoIQANAmM0UjDPEnWWRfa2_VpVSxR01ho/exec';
+
+  const sesionTexto = localStorage.getItem('sesionOposicionesPT');
+  if (!sesionTexto) window.location.href = 'index.html';
+  const sesion = JSON.parse(sesionTexto);
+  let emailActual = sesion.email;
+
+  // ---------- Definición de las 3 tablas de rúbrica ----------
+  const TABLA1 = [
+    ['t1_1', '1.1.1 Estructura general (índice, redacción, ortografía)', 2],
+    ['t1_2', '1.1.2 Inclusión de apartados de la convocatoria', 4],
+    ['t1_3', '1.1.4 Contextualización a Cantabria y centro concreto', 2],
+    ['t1_4', '1.1.5 Adecuación evaluación/metodología/diversidad', 6],
+    ['t1_5', '2.1.1 Capacidad expositiva y comunicativa', 7],
+    ['t1_6', '2.1.2 Ajusta la defensa a lo escrito', 4],
+    ['t1_7', '2.1.3 Uso adecuado del tiempo', 4],
+    ['t1_8', '2.2.1 Argumentaciones claras (competencias, saberes...)', 20],
+    ['t1_9', '2.2.2 Agrupamientos y recursos', 5],
+    ['t1_10', '2.2.3 Funciones como especialista de PT', 10],
+    ['t1_11', '2.2.4 Relación con planes/proyectos del centro', 12],
+    ['t1_12', '3.1.1 Propuestas metodológicas de inclusión', 10],
+    ['t1_13', '3.1.4 Características del alumno/contexto', 10],
+    ['t1_14', '4.1.1 Citas bibliográficas y legislativas', 2],
+    ['t1_15', '4.1.2 Apartados diferenciados de referencias', 2]
+  ];
+
+  const TABLA2 = [
+    ['t2_1', '1.1.1 Guión coherente, sucinto y claro', 1],
+    ['t2_2', '1.1.2 Contextualización en el plan de actuación', 5],
+    ['t2_3', '1.1.3 Hilo conductor claro', 5],
+    ['t2_4', '1.2.1 Justificación del programa', 5],
+    ['t2_5', '1.2.2 Competencias, saberes y criterios evaluación', 10],
+    ['t2_6', '1.2.3 Objetivos y actividades enseñanza-aprendizaje', 10],
+    ['t2_7', '1.2.4 Medidas de atención a la diversidad', 10],
+    ['t2_8', '1.2.5 Evaluación y seguimiento', 10],
+    ['t2_9', '1.3.1 Valores inclusivos (DUA, accesibilidad...)', 8],
+    ['t2_10', '1.3.3 Propuestas metodológicas acordes al plan', 8],
+    ['t2_11', '1.3.4 Realista y aplicable', 8],
+    ['t2_12', '1.3.5 Material auxiliar', 5],
+    ['t2_13', '1.4.1 Referencias bibliográficas/legislativas', 5],
+    ['t2_14', '1.4.2 Responde con criterio al tribunal (debate)', 10]
+  ];
+
+  const TABLA3 = [
+    ['o1', 'Volumen y modulación de voz'],
+    ['o2', 'Uso de pausas y preguntas retóricas'],
+    ['o3', 'Comunicación no verbal'],
+    ['o4', 'Uso del tiempo'],
+    ['o5', 'Uso de la pizarra como apoyo visual'],
+    ['o6', 'Conexiones y lógica entre epígrafes'],
+    ['o7', 'Capta la atención: creatividad'],
+    ['o8', 'Uso de legislación educativa'],
+    ['o9', 'Uso del currículo del curso'],
+    ['o10', 'Uso de terminología técnica'],
+    ['o11', 'Conexión con el contexto escolar']
+  ];
+
+  let datosGuardados = { defensa: [null, null, null, null], exposicion: [null, null, null, null] };
+
+  async function llamarBackend(accion, datos) {
+    const respuesta = await fetch(URL_API, { method: 'POST', body: JSON.stringify({ accion, datos }) });
+    return respuesta.json();
+  }
+
+  function mostrarAvisoModal(texto, tipo) {
+    const div = document.createElement('div');
+    div.className = 'aviso ' + tipo;
+    div.textContent = texto;
+    document.getElementById('modalContenido').appendChild(div);
+    setTimeout(() => div.remove(), 3500);
+  }
+
+  function pintarEstrellas() {
+    ['defensa', 'exposicion'].forEach(tipo => {
+      const contenedor = document.getElementById(tipo === 'defensa' ? 'estrellasDefensa' : 'estrellasExposicion');
+      contenedor.innerHTML = '';
+      for (let i = 0; i < 4; i++) {
+        const relleno = datosGuardados[tipo][i] !== null;
+        const estrella = document.createElement('span');
+        estrella.textContent = relleno ? '★' : '☆';
+        estrella.onclick = () => abrirRubrica(tipo, i);
+        contenedor.appendChild(estrella);
+      }
+    });
+  }
+
+  function generarCamposIndicadores(lista, prefijo, valoresGuardados) {
+    return lista.map(([clave, texto, max]) => `
+      <div class="grupo-indicador">
+        <div class="texto">${texto}</div>
+        <div class="fila" style="margin-top:6px;">
+          <input type="number" step="0.1" min="0" max="${max}" id="${prefijo}_${clave}" value="${valoresGuardados && valoresGuardados[clave] !== undefined ? valoresGuardados[clave] : ''}">
+          <span class="max">/ ${max}%</span>
+        </div>
+      </div>`).join('');
+  }
+
+  function generarCamposOral(prefijo, valoresGuardados) {
+    return TABLA3.map(([clave, texto]) => `
+      <div class="oral-item">
+        <span class="texto">${texto}</span>
+        <select id="${prefijo}_${clave}">
+          <option value="">--</option>
+          <option value="1" ${valoresGuardados && valoresGuardados[clave] == 1 ? 'selected' : ''}>1 mejorable</option>
+          <option value="2" ${valoresGuardados && valoresGuardados[clave] == 2 ? 'selected' : ''}>2 aceptable</option>
+          <option value="3" ${valoresGuardados && valoresGuardados[clave] == 3 ? 'selected' : ''}>3 buena</option>
+          <option value="4" ${valoresGuardados && valoresGuardados[clave] == 4 ? 'selected' : ''}>4 brillante</option>
+        </select>
+      </div>`).join('');
+  }
+
+  function abrirRubrica(tipo, indice) {
+    const datos = datosGuardados[tipo][indice] || {};
+    const tablaPrincipal = tipo === 'defensa' ? TABLA1 : TABLA2;
+    const tituloTabla = tipo === 'defensa' ? 'Plan de Actuación' : 'UDI / Programa de Intervención';
+    const soloLectura = !sesion.esAdmin;
+
+    document.getElementById('modalContenido').innerHTML = `
+      <h3>${tipo === 'defensa' ? 'Defensa del Plan de Actuación' : 'Exposición PI/Unidad'} — intento ${indice + 1}</h3>
+
+      <fieldset ${soloLectura ? 'disabled' : ''} style="border:none; padding:0; margin:0;">
+        <div class="titulo-tabla">${tituloTabla}</div>
+        <div id="camposPrincipal">${generarCamposIndicadores(tablaPrincipal, 'p', datos.indicadores)}</div>
+
+        <div class="titulo-tabla">Evaluación de la exposición oral</div>
+        <div id="camposOral">${generarCamposOral('o', datos.oral)}</div>
+
+        <div class="resultado-modal">
+          <div class="caja-resultado contenido">
+            <div class="etiqueta">NOTA CONTENIDO</div>
+            <div class="valor" id="notaContenidoDisplay">${datos.notaContenido !== undefined ? datos.notaContenido : '—'}</div>
+          </div>
+          <div class="caja-resultado oral">
+            <div class="etiqueta">NOTA ORAL</div>
+            <div class="valor" id="notaOralDisplay">${datos.notaOral !== undefined ? datos.notaOral : '—'}</div>
+          </div>
+        </div>
+
+        <div class="titulo-tabla">Comentarios</div>
+        <textarea class="comentarios" id="comentariosTexto" placeholder="Correcciones u observaciones para la alumna...">${datos.comentarios || ''}</textarea>
+
+        ${!soloLectura ? `<button class="boton-guardar" id="botonGuardarRubrica" onclick="guardarRubrica('${tipo}', ${indice})">Guardar evaluación</button>` : ''}
+      </fieldset>
+    `;
+
+    // Recalcular en vivo mientras la administradora puntúa
+    if (!soloLectura) {
+      document.querySelectorAll('#camposPrincipal input, #camposOral select').forEach(el => {
+        el.addEventListener('input', () => recalcularEnVivo(tablaPrincipal));
+        el.addEventListener('change', () => recalcularEnVivo(tablaPrincipal));
+      });
+    }
+
+    document.getElementById('modalFondo').classList.remove('oculto');
+  }
+
+  function recalcularEnVivo(tablaPrincipal) {
+    let sumaContenido = 0;
+    tablaPrincipal.forEach(([clave, , max]) => {
+      const v = parseFloat(document.getElementById('p_' + clave).value);
+      sumaContenido += isNaN(v) ? 0 : Math.min(v, max);
+    });
+    document.getElementById('notaContenidoDisplay').textContent = redondear(sumaContenido / 10);
+
+    let sumaOral = 0, contadosOral = 0;
+    TABLA3.forEach(([clave]) => {
+      const v = parseFloat(document.getElementById('o_' + clave).value);
+      if (!isNaN(v)) { sumaOral += v; contadosOral++; }
+    });
+    const notaOral = contadosOral > 0 ? (sumaOral / contadosOral - 1) * (10 / 3) : 0;
+    document.getElementById('notaOralDisplay').textContent = redondear(notaOral);
+  }
+
+  function redondear(n) { return Math.round(n * 100) / 100; }
+
+  function cerrarModal() {
+    document.getElementById('modalFondo').classList.add('oculto');
+    document.getElementById('modalContenido').innerHTML = '';
+  }
+
+  async function guardarRubrica(tipo, indice) {
+    const boton = document.getElementById('botonGuardarRubrica');
+    if (boton.disabled) return;
+    boton.disabled = true;
+    boton.textContent = 'Guardando...';
+
+    const tablaPrincipal = tipo === 'defensa' ? TABLA1 : TABLA2;
+    const indicadores = {};
+    let sumaContenido = 0;
+    tablaPrincipal.forEach(([clave, , max]) => {
+      const v = parseFloat(document.getElementById('p_' + clave).value) || 0;
+      const acotado = Math.min(v, max);
+      indicadores[clave] = acotado;
+      sumaContenido += acotado;
+    });
+
+    const oral = {};
+    let sumaOral = 0, contadosOral = 0;
+    TABLA3.forEach(([clave]) => {
+      const v = parseFloat(document.getElementById('o_' + clave).value);
+      oral[clave] = isNaN(v) ? '' : v;
+      if (!isNaN(v)) { sumaOral += v; contadosOral++; }
+    });
+
+    const notaContenido = redondear(sumaContenido / 10);
+    const notaOral = contadosOral > 0 ? redondear((sumaOral / contadosOral - 1) * (10 / 3)) : 0;
+    const comentarios = document.getElementById('comentariosTexto').value;
+
+    const resultado = await llamarBackend('guardarEvaluacionOral', {
+      emailAlumna: emailActual,
+      tipo, numeroIntento: indice + 1,
+      indicadores, oral, comentarios, notaContenido, notaOral
+    });
+
+    if (resultado.exito) {
+      mostrarAvisoModal('Evaluación guardada.', 'info');
+      await cargarEvaluaciones();
+      setTimeout(cerrarModal, 900);
+    } else {
+      mostrarAvisoModal(resultado.mensaje || 'No se pudo guardar.', 'error');
+      boton.disabled = false;
+      boton.textContent = 'Guardar evaluación';
+    }
+  }
+
+  async function inicializarSelector() {
+    if (!sesion.esAdmin) return;
+    const resultado = await llamarBackend('listarAlumnas', {});
+    if (!resultado.exito) return;
+    const opciones = resultado.resultado.map(a => `<option value="${a.email}">${a.nombre}</option>`).join('');
+    document.getElementById('selectorAdmin').innerHTML = `
+      <div class="selector-alumna">
+        <i class="ti ti-user" aria-hidden="true"></i>
+        <select id="selectAlumna">${opciones}</select>
+      </div>`;
+    document.getElementById('selectAlumna').value = sesion.email;
+    document.getElementById('selectAlumna').addEventListener('change', (e) => {
+      emailActual = e.target.value;
+      cargarEvaluaciones();
+    });
+  }
+
+  async function cargarEvaluaciones() {
+    const resultado = await llamarBackend('obtenerEvaluacionesOral', { emailAlumna: emailActual });
+    datosGuardados = { defensa: [null, null, null, null], exposicion: [null, null, null, null] };
+    if (resultado.exito && resultado.resultado) {
+      resultado.resultado.forEach(fila => {
+        const idx = fila.numeroIntento - 1;
+        if (idx >= 0 && idx < 4) datosGuardados[fila.tipo][idx] = fila;
+      });
+    }
+    pintarEstrellas();
+  }
+
+  inicializarSelector();
+  cargarEvaluaciones();
+</script>
+</body>
+</html>
